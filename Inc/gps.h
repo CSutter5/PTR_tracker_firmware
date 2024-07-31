@@ -7,6 +7,7 @@
 #include<stdio.h>
 #include<stdlib.h>
 #include<string.h>
+#include "trackerHw.h"
 
 #define NMEA_MAX_SENTENCE_LENGTH 82
 #define PMTK_SET_GPGGA "PMTK314,0,0,0,1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0"
