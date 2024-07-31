@@ -54,16 +54,16 @@ void setupTracker(uint8_t params) {
 
 void blink_GPS_startup() {
 	HW_writeLED(1);
-	HW_DelayMs(500);
+	HW_DelayMs(200);
 	HW_writeLED(0);
-	HW_DelayMs(500);
+	HW_DelayMs(200);
 	for(int i=0;i<GPS_sat_count;i++) {
 		HW_writeLED(1);
 		HW_DelayMs(50);
 		HW_writeLED(0);
 		HW_DelayMs(300);
 	}
-	HW_DelayMs(1000);
+	HW_DelayMs(200);
 }
 
 int main(void)
