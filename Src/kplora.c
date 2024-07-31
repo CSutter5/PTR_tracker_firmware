@@ -9,21 +9,10 @@ kppacket_t KPLORA_receivedPacket;
 uint16_t KPLORA_packetCounter = 0;
 
 void KPLORA_pack_data_standard(int _state, uint32_t time_ms, uint8_t _vbat, uint32_t _lat, uint32_t _lon, uint32_t _alt, uint8_t _fix, uint8_t _sats) {
-	//KPLORA_selfTelemetryPacket.state = _state;
-	//KPLORA_selfTelemetryPacket.timestamp_ms = time_ms;
-	//KPLORA_selfTelemetryPacket.vbat_10 = _vbat;
-	//KPLORA_selfTelemetryPacket.packet_id = KPLORA_PACKET_ID_FULL; //We specify what type of frame we're sending, in this case the big 48 byte struct
-	//KPLORA_selfTelemetryPacket.id = TRACKER_ID;
-	//KPLORA_selfTelemetryPacket.packet_no = KPLORA_packetCounter++;
-	//KPLORA_selfTelemetryPacket.lat = _lat;
-	//KPLORA_selfTelemetryPacket.lon = _lon;
-	//KPLORA_selfTelemetryPacket.alti_gps = _alt * 1000; //To mm
-	//KPLORA_selfTelemetryPacket.sats_fix = ((_fix & 3) << 6) | (_sats & 0x3F);
-
 	kppacket_header_t header = {
 		.packet_id.msg_type = PACKET_TRACKER,
 		.packet_id.msg_ver = 0,
-		.packet_id.retransmit = 0,
+		.packet_id.retransmit = 1,
 		.packet_id.encoded = 0,
 		.packet_id.redu = 0,
 		.sender_id = TRACKER_ID,
@@ -38,7 +27,7 @@ void KPLORA_pack_data_standard(int _state, uint32_t time_ms, uint8_t _vbat, uint
 		.vbat_10 = _vbat,
 		.lat = _lat,
 		.lon = _lon,
-		.alti_gps = _alt,
+		.alti_gps = _alt * 1000,
 		.sats_fix = ((_fix & 3) << 6) | (_sats & 0x3F)
 	};
 
@@ -75,7 +64,7 @@ void KPLORA_listenForPackets() {
 	while(HW_getTimer3() < TRACKER_TRANSMISSION_SPACING) {
 		if((RADIO_readIrqStatus() & 0x2) == 0x2) {
 			if(RADIO_getCRC() == 0) {
-				if(RADIO_getRxPayloadSize() == sizeof(KPLORA_selfTelemetryPacket)) {
+				if(RADIO_getRxPayloadSize() == KPLORA_selfTelemetryPacket.packet_len) {
 					RADIO_getRxPayload((uint8_t*)&KPLORA_receivedPacket);
 					if(KPLORA_receivedPacket.header.packet_id.msg_type == PACKET_TRACKER) {
 						KPLORA_fillRelayBuffer(KPLORA_receivedPacket, KPLORA_relayBuffer);
