@@ -39,7 +39,7 @@ void KPLORA_pack_data_standard(int _state, uint32_t time_ms, uint8_t _vbat, uint
 
 void KPLORA_send_data_lora() {
 	HW_writeLED(1);
-	RADIO_sendPacketLoRa((uint8_t*)&(KPLORA_selfTelemetryPacket), KPLORA_selfTelemetryPacket.packet_len, 500);
+	RADIO_sendPacketLoRa((uint8_t*)&(KPLORA_selfTelemetryPacket.header), KPLORA_selfTelemetryPacket.packet_len, 500);
 	HW_writeLED(0);
 	RADIO_clearIrqStatus();
 	HW_DelayMs(5);
@@ -65,7 +65,7 @@ void KPLORA_listenForPackets() {
 		if((RADIO_readIrqStatus() & 0x2) == 0x2) {
 			if(RADIO_getCRC() == 0) {
 				if(RADIO_getRxPayloadSize() == KPLORA_selfTelemetryPacket.packet_len) {
-					RADIO_getRxPayload((uint8_t*)&KPLORA_receivedPacket);
+					RADIO_getRxPayload((uint8_t*)&KPLORA_receivedPacket.header);
 					if(KPLORA_receivedPacket.header.packet_id.msg_type == PACKET_TRACKER) {
 						KPLORA_fillRelayBuffer(KPLORA_receivedPacket, KPLORA_relayBuffer);
 					}
@@ -107,7 +107,7 @@ void KPLORA_transmitRelayBuffer() {
 			memcpy(&(KPLORA_relayBuffer[i].payload), &payload, sizeof(kppacket_payload_rocket_tracker_t));
 			KPLORA_listenBeforeTalk();
 			HW_writeLED(1);
-			RADIO_sendPacketLoRa((uint8_t*)&(KPLORA_relayBuffer[i]), KPLORA_relayBuffer[i].packet_len, 500);
+			RADIO_sendPacketLoRa((uint8_t*)&(KPLORA_relayBuffer[i].header), KPLORA_relayBuffer[i].packet_len, 500);
 			HW_writeLED(0);
 			RADIO_clearIrqStatus();
 			HW_DelayMs(5);
