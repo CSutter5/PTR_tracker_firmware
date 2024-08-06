@@ -24,12 +24,12 @@ typedef enum{
 typedef union{
 	uint16_t ID;
 	struct{
+		msg_type_e msg_type;		// Message type
 		uint8_t msg_ver		: 2;	// Message version (should be 0, for future use)
 		uint8_t retransmit	: 1;	// Retransmission flag (1=ON, 0=OFF)
 
 		uint8_t encoded		: 1;	// Data encryption (1=ON, 0=OFF)
 		uint8_t redu		: 4;	// Redundant bits for future use
-		msg_type_e msg_type;		// Message type
 	};
 } packet_id_t;
 
@@ -49,7 +49,8 @@ typedef struct __attribute__((__packed__)){
     uint8_t vbat_10;    // Battery voltage (in decivolts [V*10])
     int32_t lat;	    // Latitude  [1e-7 deg]
     int32_t lon;	    // Longitude [1e-7 deg]
-    int16_t alti_gps;	// Height above ellipsoid [x10m]
+    uint16_t alti_gps;	// Height above ellipsoid [alt+1000]
+    uint16_t max_alt;	// Max height (apogee) [alt+1000]
     uint8_t sats_fix;	// 6b - sat_cnt + 2b fix
 } kppacket_payload_rocket_tracker_t;
 

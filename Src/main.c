@@ -102,7 +102,7 @@ int main(void)
 	HW_StartTimer3();
 	while(state == OPERATION) {
 		read_analogSensors(&vbat);
-		KPLORA_pack_data_standard(state, HW_getTimeMs(), vbat, GPS_lat, GPS_lon, GPS_alt, GPS_fix, GPS_sat_count);
+		KPLORA_pack_data_standard(state, HW_getTimeMs(), vbat, GPS_lat, GPS_lon, GPS_alt, GPS_max_alt, GPS_fix, GPS_sat_count);
 		KPLORA_listenBeforeTalk();
 		KPLORA_send_data_lora();
 		if(A_flag) {
