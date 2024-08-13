@@ -5,6 +5,7 @@ uint32_t GPS_lon_unsigned = 0;
 int32_t GPS_lat = 0;
 int32_t GPS_lon = 0;
 int32_t GPS_alt = 0;
+int32_t GPS_max_alt = 0;
 uint8_t GPS_sat_count = 0;
 uint8_t GPS_fix = 0;
 char GPS_sentence[NMEA_MAX_SENTENCE_LENGTH];
@@ -70,6 +71,9 @@ bool GPS_parse(char c) {
 						break;
 					case 9:
 						GPS_alt = atol(token);
+						if((GPS_alt > GPS_max_alt) && (GPS_fix > 0)) {
+							GPS_max_alt = GPS_alt;
+						}
 						break;
 				}
 				token = strtok(NULL, ",");

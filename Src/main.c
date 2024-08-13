@@ -54,16 +54,16 @@ void setupTracker(uint8_t params) {
 
 void blink_GPS_startup() {
 	HW_writeLED(1);
-	HW_DelayMs(500);
+	HW_DelayMs(200);
 	HW_writeLED(0);
-	HW_DelayMs(500);
+	HW_DelayMs(200);
 	for(int i=0;i<GPS_sat_count;i++) {
 		HW_writeLED(1);
 		HW_DelayMs(50);
 		HW_writeLED(0);
 		HW_DelayMs(300);
 	}
-	HW_DelayMs(1000);
+	HW_DelayMs(200);
 }
 
 int main(void)
@@ -102,7 +102,7 @@ int main(void)
 	HW_StartTimer3();
 	while(state == OPERATION) {
 		read_analogSensors(&vbat);
-		KPLORA_pack_data_standard(state, HW_getTimeMs(), vbat, GPS_lat, GPS_lon, GPS_alt, GPS_fix, GPS_sat_count);
+		KPLORA_pack_data_standard(state, HW_getTimeMs(), vbat, GPS_lat, GPS_lon, GPS_alt, GPS_max_alt, GPS_fix, GPS_sat_count);
 		KPLORA_listenBeforeTalk();
 		KPLORA_send_data_lora();
 		if(A_flag) {
