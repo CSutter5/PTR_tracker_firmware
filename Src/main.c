@@ -5,6 +5,8 @@
 #include "kplora.h"
 
 enum FlightState state;
+uint8_t state2;
+
 volatile char uartReceivedByte = '\0';
 uint8_t vbat;
 uint8_t A_flag = 0;
@@ -69,6 +71,7 @@ void blink_GPS_startup() {
 int main(void)
 {
 	state = STARTUP;
+	state2 = state;
 	HW_trackerHwInit();
 	setupTracker(getSwitchPosition());
 	RADIO_init();
@@ -95,12 +98,15 @@ int main(void)
 	GPS_sendCmd(PMTK_SET_FAST_UPDATE);
 	__enable_irq();
 	state = WAIT_FOR_FIX;
+	state2 = state;
 	while(GPS_sat_count < 5) {
 		blink_GPS_startup();
 	}
 	state = OPERATION;
+	state2 = state;
 	HW_StartTimer3();
 	while(state == OPERATION) {
+		state2 = state;
 		read_analogSensors(&vbat);
 		KPLORA_pack_data_standard(state, HW_getTimeMs(), vbat, GPS_lat, GPS_lon, GPS_alt, GPS_max_alt, GPS_fix, GPS_sat_count);
 		KPLORA_listenBeforeTalk();
