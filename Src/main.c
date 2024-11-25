@@ -72,6 +72,7 @@ int main(void)
 {
 	state = STARTUP;
 	state2 = state;
+
 	HW_trackerHwInit();
 	setupTracker(getSwitchPosition());
 	RADIO_init();
@@ -97,13 +98,19 @@ int main(void)
 	GPS_sendCmd(PMTK_SET_GPGGA);
 	GPS_sendCmd(PMTK_SET_FAST_UPDATE);
 	__enable_irq();
+
 	state = WAIT_FOR_FIX;
 	state2 = state;
-	while(GPS_sat_count < 5) {
+
+ 	while(GPS_sat_count < 5) {
 		blink_GPS_startup();
 	}
+
 	state = OPERATION;
 	state2 = state;
+
+
+
 	HW_StartTimer3();
 	while(state == OPERATION) {
 		state2 = state;
