@@ -13,6 +13,8 @@ uint8_t A_flag = 0;
 uint8_t channel = 0;
 uint8_t txPower = TRACKER_TXPOWER_LOW;
 
+uint8_t sats;
+
 void read_analogSensors(uint8_t *voltage) {
 	*voltage = (uint32_t)((HW_readADC(3)*1000 / 4095 * 33 * 3) / 1000); //Returns battery voltage * 10
 }
@@ -94,22 +96,21 @@ int main(void)
 		break;
 	}
     __disable_irq();
-    GPS_sendCmd(PMTK_RESET);
-	GPS_sendCmd(PMTK_SET_GPGGA);
-	GPS_sendCmd(PMTK_SET_FAST_UPDATE);
+     GPS_sendCmd(PMTK_RESET);
+	 GPS_sendCmd(PMTK_SET_GPGGA);
+	 GPS_sendCmd(PMTK_SET_FAST_UPDATE);
 	__enable_irq();
 
 	state = WAIT_FOR_FIX;
 	state2 = state;
 
  	while(GPS_sat_count < 5) {
+ 		sats = GPS_sat_count;
 		blink_GPS_startup();
 	}
 
 	state = OPERATION;
 	state2 = state;
-
-
 
 	HW_StartTimer3();
 	while(state == OPERATION) {
